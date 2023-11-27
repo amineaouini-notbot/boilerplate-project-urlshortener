@@ -26,17 +26,33 @@ app.post('/api/shorturl', (req, res)=>{
   let isValid = url.includes('http://') || url.includes('https://')
   if(!isValid) res.json({error: "Invalid URL"})
 
-  fs.readFile(__dirname + "/db/urls.json", (error, urls) =>{
+  
+  fs.readFile(__dirname + "/db/urls.json", (error, data) =>{
     if (error) res.json({error})
-    urls = JSON.parse(urls)
+    data = JSON.parse(data)
+
+
     
-    if(typeof urls[url] === 'number') res.json({ original_url : url, short_url : urls[url]})
-    var index = Object.keys(urls).length;
-      res.json(index)
+    
+    if(typeof data.urls[url] === 'number') res.json({ original_url : url, short_url : data.urls[url]})
+    else{
+      var index = Object.keys(data.urls).length;
+      
+      data.urls[url] = index;
+      data.byIndex[index] = url
+      let toJson = JSON.stringify(data)
+      fs.writeFileSync(__dirname + '/db/urls.json', toJson)
+      let result = {
+        original_url : url,
+        short_url : index
+      }
+      res.json(result)
+    }
     
   })
-  //res.redirect("/")
 })
+
+
 
 app.listen(port, function() {
   console.log(`Listening on port ${port}`);
