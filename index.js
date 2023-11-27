@@ -10,7 +10,8 @@ const bodyParser = require('body-parser');
 const port = 4000;
 
 app.use(cors());
-app.use(busboyBodyParser())
+
+// parse incoming data
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use('/public', express.static(`${process.cwd()}/public`));
@@ -57,12 +58,12 @@ app.post('/api/shorturl', (req, res)=>{
 
 app.get('/api/shorturl/:short_url', (req, res)=>{
   let {short_url} = req.params;
-
-  fs.readFile(__dirname + '/db/urls.json', (error, data) =>{
+  // get inserted urls data
+  fs.readFile(__dirname + '/db/urls.json', (error, data) =>{ 
     if (error) res.json({error})
     data = JSON.parse(data)
 
-    res.redirect(data.byIndex[short_url])
+    res.redirect(data.byIndex[short_url]) // redirect shortened url to it's path
   })
 })
 
