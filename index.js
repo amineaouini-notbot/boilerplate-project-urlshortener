@@ -3,7 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const busboyBodyParser = require('busboy-body-parser')
-const fs = require('fs')
+const fs = require('fs');
+const { json } = require('body-parser');
 
 // Basic Configuration
 const port = 4000;
@@ -52,7 +53,16 @@ app.post('/api/shorturl', (req, res)=>{
   })
 })
 
+app.get('/api/shorturl/:short_url', (req, res)=>{
+  let {short_url} = req.params;
 
+  fs.readFile(__dirname + '/db/urls.json', (error, data) =>{
+    if (error) res.json({error})
+    data = JSON.parse(data)
+
+    res.redirect(data.byIndex[short_url])
+  })
+})
 
 app.listen(port, function() {
   console.log(`Listening on port ${port}`);
