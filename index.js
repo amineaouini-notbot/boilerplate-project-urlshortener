@@ -27,30 +27,31 @@ app.get('/api/hello', function(req, res) {
 
 app.post('/api/shorturl', (req, res)=>{
   let {url} = req.body;
+  // if url isn't a valid website send error
   let isValid = url.includes('http://') || url.includes('https://')
   if(!isValid) res.json({ error: 'invalid url' })
 
-  
+  // retreive inserted urls
   fs.readFile(__dirname + "/db/urls.json", (error, data) =>{
     if (error) res.json({error})
     data = JSON.parse(data)
 
-
-    
-    
+    // if url is already in db send response
     if(typeof data.urls[url] === 'number') res.json({ original_url : url, short_url : data.urls[url]})
     else{
+      // if not inserted in in db add it
       var index = Object.keys(data.urls).length+1;
       
       data.urls[url] = index;
       data.byIndex[index] = url
       let toJson = JSON.stringify(data)
+
       fs.writeFileSync(__dirname + '/db/urls.json', toJson)
       let result = {
         original_url : url,
         short_url : index
       }
-      res.json(result)
+      res.json(result) // send result afted new url inserted
     }
     
   })
