@@ -25,7 +25,7 @@ app.get('/api/hello', function(req, res) {
 app.post('/api/shorturl', (req, res)=>{
   let {url} = req.body;
   let isValid = url.includes('http://') || url.includes('https://')
-  if(!isValid) res.json({error: "Invalid URL"})
+  if(!isValid) res.json({ error: 'invalid url' })
 
   
   fs.readFile(__dirname + "/db/urls.json", (error, data) =>{
