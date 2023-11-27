@@ -35,7 +35,7 @@ app.post('/api/shorturl', (req, res)=>{
 
     
     
-    if(typeof data.urls[url] === 'number') res.json({ original_url : url, short_url : data.urls[url]})
+    if(typeof data.urls[url] === 'number') res.send({ original_url : url, short_url : data.urls[url]})
     else{
       var index = Object.keys(data.urls).length;
       
@@ -47,7 +47,7 @@ app.post('/api/shorturl', (req, res)=>{
         original_url : url,
         short_url : index
       }
-      res.json(result)
+      res.send(result)
     }
     
   })
